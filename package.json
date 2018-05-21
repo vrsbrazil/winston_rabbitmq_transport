@@ -1,0 +1,15 @@
+{
+  "name": "winston_rabbitmq_transport",
+  "version": "1.0.0",
+  "description": "Winston Logger Transport Class for RabbitMQ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Vinicius Santos",
+  "license": "ISC",
+  "dependencies": {
+    "amqplib": "0.5.2",
+    "winston-transport": "3.2.1"
+  }
+}
