@@ -1,6 +1,6 @@
 {
   "name": "winston_rabbitmq_transport",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Winston Logger Transport Class for RabbitMQ",
   "main": "index.js",
   "scripts": {

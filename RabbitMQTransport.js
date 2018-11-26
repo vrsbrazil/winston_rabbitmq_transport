@@ -1,5 +1,6 @@
 var amqp = require('amqplib/callback_api');
 var Transport = require('winston-transport');
+var loggers = new Map();
 
 module.exports = class RabbitMQTransport extends Transport {
 
@@ -18,6 +19,12 @@ module.exports = class RabbitMQTransport extends Transport {
     this.origin = opts.origin;
     this.pLogger = new Promise(function(resolve, reject){
 
+      var loggerPath = opts.url+opts.queue;
+
+      if(loggers.has(loggerPath)){
+        return resolve(loggers.get(loggerPath));
+      }
+
       amqp.connect(opts.url, function(err, conn) {
 
         if(err){
@@ -34,7 +41,9 @@ module.exports = class RabbitMQTransport extends Transport {
 
           ch.assertQueue(q, {durable: false});
 
-          resolve(ch);
+          loggers.set(loggerPath, ch);
+          
+          return resolve(ch);
 
         });
 
