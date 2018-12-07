@@ -42,7 +42,7 @@ module.exports = class RabbitMQTransport extends Transport {
           ch.assertQueue(q, {durable: false});
 
           loggers.set(loggerPath, ch);
-          
+
           return resolve(ch);
 
         });
@@ -53,7 +53,7 @@ module.exports = class RabbitMQTransport extends Transport {
 
   }
 
-  log(info, message) {
+  log(info, callback) {
 
     var pLogger = this.pLogger;
     var queue = this.queue;
@@ -62,13 +62,13 @@ module.exports = class RabbitMQTransport extends Transport {
     setImmediate(function () {
       pLogger.then(function(channel){
 
-        var log = JSON.stringify({
-          level: info,
-          log: message,
-          "origin": origin
-        });
+        info.origin = origin;
 
-        channel.sendToQueue(queue, new Buffer(log));
+        let strInfo = JSON.stringify(info)
+
+        channel.sendToQueue(queue, new Buffer(strInfo));
+
+        callback();
 
       },function(err){
         console.log("logger error", err);
