@@ -1,6 +1,6 @@
 {
   "name": "winston_rabbitmq_transport",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Winston Logger Transport Class for RabbitMQ",
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,7 @@
   "author": "Vinicius Santos",
   "license": "ISC",
   "dependencies": {
-    "amqplib": "^0.5.2",
-    "winston-transport": "^3.2.1"
+    "winston-transport": "^3.2.1",
+    "amqp-connection-manager": "^2.3.0"
   }
 }

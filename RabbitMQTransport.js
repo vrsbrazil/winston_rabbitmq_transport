@@ -1,4 +1,4 @@
-var amqp = require('amqplib/callback_api');
+var amqp = require('amqp-connection-manager');
 var Transport = require('winston-transport');
 var loggers = new Map();
 
@@ -25,29 +25,20 @@ module.exports = class RabbitMQTransport extends Transport {
         return resolve(loggers.get(loggerPath));
       }
 
-      amqp.connect(opts.url, function(err, conn) {
+      var connection = amqp.connect([opts.url]);
 
-        if(err){
-          return reject(err);
-        }
-
-        conn.createChannel(function(err, ch) {
-
-          if(err){
-            return reject(err);
+      var channelWrapper = connection.createChannel({
+          json: true,
+          setup: function(channel) {
+              // `channel` here is a regular amqplib `ConfirmChannel`.
+              // Note that `this` here is the channelWrapper instance.
+              return channel.assertQueue(opts.queue, {durable: false}),
           }
-
-          var q = opts.queue;
-
-          ch.assertQueue(q, {durable: false});
-
-          loggers.set(loggerPath, ch);
-
-          return resolve(ch);
-
-        });
-
       });
+
+      loggers.set(loggerPath, channelWrapper);
+
+      resolve(loggers.get(loggerPath));
 
     });
 
@@ -64,14 +55,17 @@ module.exports = class RabbitMQTransport extends Transport {
 
         info.origin = origin;
 
-        let strInfo = JSON.stringify(info)
-
-        channel.sendToQueue(queue, new Buffer(strInfo));
+      channel.sendToQueue(queue, info)
+      .then(function() {
+          return console.log("message sent");
+      }).catch(function(err) {
+          return console.error(err);
+      });
 
         callback();
 
       },function(err){
-        console.log("logger error", err);
+        console.error(err);
       });
     });
 
