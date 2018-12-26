@@ -32,7 +32,7 @@ module.exports = class RabbitMQTransport extends Transport {
           setup: function(channel) {
               // `channel` here is a regular amqplib `ConfirmChannel`.
               // Note that `this` here is the channelWrapper instance.
-              return channel.assertQueue(opts.queue, {durable: false}),
+              return channel.assertQueue(opts.queue, {durable: false})
           }
       });
 
