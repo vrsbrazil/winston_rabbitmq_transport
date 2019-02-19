@@ -25,7 +25,7 @@ module.exports = class RabbitMQTransport extends Transport {
         return resolve(loggers.get(loggerPath));
       }
 
-      var connection = amqp.connect([opts.url]);
+      var connection = amqp.connect(opts.url);
 
       var channelWrapper = connection.createChannel({
           json: true,
